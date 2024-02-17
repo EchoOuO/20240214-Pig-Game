@@ -14,11 +14,13 @@ const btnHold = document.querySelector('.btn--hold');
 let scores, currentScore, activePlayer, playing;
 
 const init = function () {
+  // invisible
   scores = [0, 0];
   currentScore = 0;
   activePlayer = 0;
   playing = true;
 
+  // visible
   current0El.textContent = 0;
   current1El.textContent = 0;
   score0El.textContent = 0;
@@ -33,13 +35,18 @@ const init = function () {
   btnRoll.removeAttribute('disabled');
   btnHold.removeAttribute('disabled');
 };
-// 剛載入頁面時就執行init
+
+// call init function at very beginning
 init();
 
 const switchPlayer = function () {
+  // with scores = [] ; make the naming and activePlayer = 0 or 1;
   activePlayer = activePlayer === 0 ? 1 : 0;
   document.getElementById(`current--${activePlayer}`).textContent = 0;
+
+  // in roll dice button : currentScore += dice, so need to make it zero when switching player
   currentScore = 0;
+
   player0El.classList.toggle('player--active');
   player1El.classList.toggle('player--active');
 };
@@ -65,14 +72,14 @@ btnRoll.addEventListener('click', function () {
 
 // 4. hold score
 btnHold.addEventListener('click', function () {
-  // add current score to active players score
+  // add current score to active players score, and display it
   scores[activePlayer] += currentScore;
   document.getElementById(`score--${activePlayer}`).textContent =
     scores[activePlayer];
 
   // chekc if player's score >= 100 ==> finish game
   if (scores[activePlayer] >= 100) {
-    // finish the game & make buttons disabled
+    // finish the game & show who's winner & make buttons disabled
     document
       .querySelector(`.player--${activePlayer}`)
       .classList.add('player--winner');
