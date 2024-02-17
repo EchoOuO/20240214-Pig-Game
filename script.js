@@ -11,13 +11,30 @@ const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
 
-score0El.textContent = 0;
-score1El.textContent = 0;
-diceEl.classList.add('hidden');
+let scores, currentScore, activePlayer, playing;
 
-const scores = [0, 0];
-let currentScore = 0;
-let activePlayer = 0;
+const init = function () {
+  scores = [0, 0];
+  currentScore = 0;
+  activePlayer = 0;
+  playing = true;
+
+  current0El.textContent = 0;
+  current1El.textContent = 0;
+  score0El.textContent = 0;
+  score1El.textContent = 0;
+
+  diceEl.classList.add('hidden');
+
+  player0El.classList.remove('player--winner');
+  player1El.classList.remove('player--winner');
+  player0El.classList.add('player--active');
+  player1El.classList.remove('player--active');
+  btnRoll.removeAttribute('disabled');
+  btnHold.removeAttribute('disabled');
+};
+// 剛載入頁面時就執行init
+init();
 
 const switchPlayer = function () {
   activePlayer = activePlayer === 0 ? 1 : 0;
@@ -35,7 +52,7 @@ btnRoll.addEventListener('click', function () {
   diceEl.classList.remove('hidden');
   diceEl.src = `dice-${dice}.png`;
 
-  // 3. check for roolled 1 : if true, switch to next player
+  // 3. check for rolled 1 : if true, switch to next player
   if (dice !== 1) {
     currentScore += dice;
     document.getElementById(`current--${activePlayer}`).textContent =
@@ -47,7 +64,6 @@ btnRoll.addEventListener('click', function () {
 });
 
 // 4. hold score
-
 btnHold.addEventListener('click', function () {
   // add current score to active players score
   scores[activePlayer] += currentScore;
@@ -55,7 +71,7 @@ btnHold.addEventListener('click', function () {
     scores[activePlayer];
 
   // chekc if player's score >= 100 ==> finish game
-  if (scores[activePlayer] >= 20) {
+  if (scores[activePlayer] >= 100) {
     // finish the game & make buttons disabled
     document
       .querySelector(`.player--${activePlayer}`)
@@ -74,3 +90,50 @@ btnHold.addEventListener('click', function () {
     switchPlayer();
   }
 });
+
+// 5. Reset game, (1) in the middle of game  (2) at the end of game
+
+// -- 老師的版本~~  寫一個 init function，把一些初始設定都包進去 並在剛開始 & 按下按鈕時執行funciton
+
+btnNew.addEventListener('click', init);
+
+// -- 我的版本~~~
+// // 感覺很適合寫一下 各種狀況下的 classList，比較好釐清怎麼加加減減 classList~~
+// // 現在這版本是硬幹版==，邏輯有點醜XDD
+
+// const scoreAll = document.querySelectorAll('.current-score');
+
+// btnNew.addEventListener('click', () => {
+//   // hide the dice
+//   diceEl.classList.add('hidden');
+
+//   // reset scores & current score
+//   current0El.textContent = 0;
+//   current1El.textContent = 0;
+//   currentScore = 0;
+//   score0El.textContent = 0;
+//   score1El.textContent = 0;
+//   scores = [0, 0];
+
+//   // reset background & switch to player 1
+//   player0El.classList.remove('player--winner');
+//   player1El.classList.remove('player--winner');
+
+//   // 沒考慮到 遊戲結束的狀況
+//   // [進行中] 1 = active  V
+//   // [進行中] 2 = active  V
+//   // [結束] 1 = winner
+//   // [結束] 2 = winner
+//   if (activePlayer === 1) {
+//     switchPlayer();
+//     document.querySelector(`.player--1`).classList.remove('player--active');
+//   } else if (activePlayer === 0) {
+//     document
+//       .querySelector(`.player--${activePlayer}`)
+//       .classList.add('player--active');
+//   }
+
+//   // enable button
+//   btnRoll.removeAttribute('disabled');
+//   btnHold.removeAttribute('disabled');
+// });
